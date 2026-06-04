@@ -75,6 +75,36 @@ Dataset/
     └── Labels/          # YOLO 格式標註
 ```
 
+### 📦 資料集下載說明
+
+由於完整資料集（約 6.4 GB）超過 GitHub 單一儲存庫建議大小，本倉庫僅上傳**前 3 個分卷**（共約 270 MB）作為格式範例：
+
+```
+程式碼/Dataset_split/
+├── Dataset.zip.001   # 第 1 分卷（90 MB）
+├── Dataset.zip.002   # 第 2 分卷（90 MB）
+└── Dataset.zip.003   # 第 3 分卷（90 MB）
+```
+
+完整資料集共 70 個分卷（`Dataset.zip.001` ～ `Dataset.zip.070`）。
+若需完整資料集，請聯繫團隊成員。
+
+**合併還原方式（Windows）：**
+```powershell
+# 將所有分卷放在同一資料夾後執行：
+Copy-Item Dataset.zip.001 Dataset.zip -Force
+Get-ChildItem Dataset.zip.* | Sort-Object Name | ForEach-Object {
+    Get-Content $_.FullName -Encoding Byte -ReadCount 0 | Add-Content Dataset.zip -Encoding Byte
+}
+# 再使用 7-zip 或 WinRAR 解壓縮 Dataset.zip
+```
+
+**合併還原方式（macOS/Linux）：**
+```bash
+cat Dataset.zip.001 Dataset.zip.002 ... Dataset.zip.070 > Dataset.zip
+unzip Dataset.zip
+```
+
 ## 🔬 技術指標
 *   **辨識準確率 (mAP)**：整體辨識率達 **0.85**。
 *   **診斷類別**：涵蓋硬組織（牙齒）、軟組織（牙齦/黏膜）及清潔死角分析。
