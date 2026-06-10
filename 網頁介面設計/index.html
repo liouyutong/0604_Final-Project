@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧牙齒健康管理 — AI 口腔風險識別與個人化導航</title>
+    <meta name="description" content="AI 驅動的牙齒健康管理系統，提供口腔風險識別、潔牙導航、就醫預警等個人化指引。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <!-- Ambient Background -->
+    <div class="ambient-bg">
+        <div class="ambient-orb orb-1"></div>
+        <div class="ambient-orb orb-2"></div>
+        <div class="ambient-orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">
+                <svg viewBox="0 0 40 40" fill="none">
+                    <path d="M20 4C14 4 10 8 8 12C6 16 7 22 10 28C12 32 15 36 17 38C18 39 19 40 20 40C21 40 22 39 23 38C25 36 28 32 30 28C33 22 34 16 32 12C30 8 26 4 20 4Z" fill="url(#toothGrad)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                    <defs>
+                        <linearGradient id="toothGrad" x1="8" y1="4" x2="32" y2="40">
+                            <stop offset="0%" stop-color="#6ee7b7"/>
+                            <stop offset="100%" stop-color="#3b82f6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <span class="brand-text">DentAI<span class="brand-highlight">Care</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="#hero" class="nav-link active" data-section="hero">首頁</a>
+            <a href="#risk" class="nav-link" data-section="risk">風險識別</a>
+            <a href="#guidance" class="nav-link" data-section="guidance">個人化指引</a>
+            <a href="#toothmap" class="nav-link" data-section="toothmap">口腔地圖</a>
+        </div>
+        <button class="nav-cta" id="startScanBtn">
+            <span class="cta-pulse"></span>
+            開始檢測
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                AI 驅動口腔健康管理
+            </div>
+            <h1 class="hero-title">
+                智慧<span class="gradient-text">牙齒健康</span><br>風險識別系統
+            </h1>
+            <p class="hero-desc">
+                結合先進影像辨識技術，即時偵測齲齒、牙結石、口腔潰瘍等問題，<br>
+                並提供個人化潔牙導航與就醫預警建議。
+            </p>
+            <div class="hero-actions">
+                <button class="btn btn-primary" id="heroScanBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    拍照掃描口腔
+                </button>
+                <button class="btn btn-secondary" id="heroLearnBtn">
+                    了解更多
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number" data-target="98.5">0</span><span class="stat-suffix">%</span>
+                    <span class="stat-label">識別準確率</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="12">0</span><span class="stat-suffix">+</span>
+                    <span class="stat-label">風險類型偵測</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="50000">0</span><span class="stat-suffix">+</span>
+                    <span class="stat-label">用戶信賴</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="tooth-3d-container" id="tooth3d">
+                <div class="tooth-3d">
+                    <svg viewBox="0 0 200 280" class="tooth-svg">
+                        <!-- Main tooth body -->
+                        <defs>
+                            <linearGradient id="toothBody" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#f0fdfa"/>
+                                <stop offset="50%" stop-color="#e0f2fe"/>
+                                <stop offset="100%" stop-color="#dbeafe"/>
+                            </linearGradient>
+                            <linearGradient id="toothShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(59,130,246,0.1)"/>
+                                <stop offset="100%" stop-color="rgba(16,185,129,0.2)"/>
+                            </linearGradient>
+                            <filter id="glow">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Tooth crown -->
+                        <path d="M100 20 C60 20 40 50 35 80 C30 110 40 130 55 140 C60 145 65 160 70 180 C75 200 80 220 85 240 C90 255 95 260 100 260 C105 260 110 255 115 240 C120 220 125 200 130 180 C135 160 140 145 145 140 C160 130 170 110 165 80 C160 50 140 20 100 20Z" 
+                              fill="url(#toothBody)" stroke="rgba(59,130,246,0.3)" stroke-width="1.5" filter="url(#glow)"/>
+                        <!-- Enamel highlight -->
+                        <path d="M100 30 C70 30 55 55 50 80 C48 90 50 100 55 108" 
+                              fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="3" stroke-linecap="round"/>
+                        <!-- Scanning line animation -->
+                        <line class="scan-line" x1="30" y1="20" x2="170" y2="20" stroke="url(#scanGrad)" stroke-width="2"/>
+                        <defs>
+                            <linearGradient id="scanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="rgba(59,130,246,0)"/>
+                                <stop offset="50%" stop-color="rgba(59,130,246,0.8)"/>
+                                <stop offset="100%" stop-color="rgba(59,130,246,0)"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <!-- Floating risk indicators -->
+                    <div class="risk-indicator ri-1" data-tooltip="齲齒偵測">
+                        <div class="ri-dot warning"></div>
+                    </div>
+                    <div class="risk-indicator ri-2" data-tooltip="牙結石">
+                        <div class="ri-dot danger"></div>
+                    </div>
+                    <div class="risk-indicator ri-3" data-tooltip="正常區域">
+                        <div class="ri-dot safe"></div>
+                    </div>
+                </div>
+                <!-- Orbit rings -->
+                <div class="orbit-ring ring-1"></div>
+                <div class="orbit-ring ring-2"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Risk Identification Section -->
+    <section class="section risk-section" id="risk">
+        <div class="section-header">
+            <div class="section-badge">核心功能</div>
+            <h2 class="section-title">牙齒<span class="gradient-text">風險識別</span></h2>
+            <p class="section-desc">先進 AI 影像辨識，涵蓋結構、牙周與黏膜三大面向的全方位口腔健康檢測</p>
+        </div>
+
+        <div class="risk-grid">
+            <!-- Card 1: Cavities -->
+            <div class="risk-card" id="card-cavities">
+                <div class="card-glow"></div>
+                <div class="card-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+                        <path d="M24 10C18 10 14 14 12 18C10 22 11 28 14 34C16 38 18 40 20 42C21 43 22 44 24 44C26 44 27 43 28 42C30 40 32 38 34 34C37 28 38 22 36 18C34 14 30 10 24 10Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <circle cx="20" cy="22" r="3" fill="currentColor" opacity="0.6"/>
+                        <circle cx="28" cy="26" r="2" fill="currentColor" opacity="0.4"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">齲齒偵測</h3>
+                <p class="card-desc">智能辨識早期蛀牙、牙齒表面脫鈣及深層齲洞，精準標記受影響位置。</p>
+                <div class="card-metrics">
+                    <div class="metric">
+                        <span class="metric-value">97.2%</span>
+                        <span class="metric-label">偵測率</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">&lt;2s</span>
+                        <span class="metric-label">分析速度</span>
+                    </div>
+                </div>
+                <div class="card-status">
+                    <span class="status-dot active"></span>
+                    <span>即時監測中</span>
+                </div>
+            </div>
+
+            <!-- Card 2: Misalignment -->
+            <div class="risk-card" id="card-misalignment">
+                <div class="card-glow"></div>
+                <div class="card-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <rect x="8" y="14" width="8" height="20" rx="3" stroke="currentColor" stroke-width="2" transform="rotate(-10, 12, 24)"/>
+                        <rect x="20" y="12" width="8" height="24" rx="3" stroke="currentColor" stroke-width="2"/>
+                        <rect x="32" y="14" width="8" height="20" rx="3" stroke="currentColor" stroke-width="2" transform="rotate(10, 36, 24)"/>
+                        <path d="M10 38 L38 38" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.5"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">牙齒歪斜分析</h3>
+                <p class="card-desc">偵測牙齒排列不整、咬合異常及擁擠問題，評估矯正需求等級。</p>
+                <div class="card-metrics">
+                    <div class="metric">
+                        <span class="metric-value">96.8%</span>
+                        <span class="metric-label">準確度</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">3D</span>
+                        <span class="metric-label">空間分析</span>
+                    </div>
+                </div>
+                <div class="card-status">
+                    <span class="status-dot active"></span>
+                    <span>即時監測中</span>
+                </div>
+            </div>
+
+            <!-- Card 3: Tartar -->
+            <div class="risk-card" id="card-tartar">
+                <div class="card-glow"></div>
+                <div class="card-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <path d="M24 8C18 8 14 12 12 16C10 20 12 28 14 32" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M24 8C30 8 34 12 36 16C38 20 36 28 34 32" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M14 32C16 36 20 40 24 42C28 40 32 36 34 32" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M10 28C14 30 20 31 24 31C28 31 34 30 38 28" stroke="currentColor" stroke-width="2" stroke-dasharray="4 2" opacity="0.6"/>
+                        <circle cx="16" cy="29" r="2" fill="currentColor" opacity="0.5"/>
+                        <circle cx="32" cy="29" r="2" fill="currentColor" opacity="0.5"/>
+                        <circle cx="24" cy="30" r="1.5" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">牙結石識別</h3>
+                <p class="card-desc">精準定位牙齦線上下的結石堆積區域，評估清潔程度與洗牙需求。</p>
+                <div class="card-metrics">
+                    <div class="metric">
+                        <span class="metric-value">95.4%</span>
+                        <span class="metric-label">識別率</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">分級</span>
+                        <span class="metric-label">嚴重度評估</span>
+                    </div>
+                </div>
+                <div class="card-status">
+                    <span class="status-dot active"></span>
+                    <span>即時監測中</span>
+                </div>
+            </div>
+
+            <!-- Card 4: Ulcers -->
+            <div class="risk-card" id="card-ulcers">
+                <div class="card-glow"></div>
+                <div class="card-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <ellipse cx="24" cy="24" rx="16" ry="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <ellipse cx="18" cy="22" rx="4" ry="3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-dasharray="3 2"/>
+                        <ellipse cx="30" cy="26" rx="3" ry="2" stroke="currentColor" stroke-width="1.5" fill="none" stroke-dasharray="3 2"/>
+                        <path d="M12 30 Q24 36 36 30" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.4"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">口腔潰瘍辨識</h3>
+                <p class="card-desc">識別各類型口腔潰瘍、黏膜異常病變，追蹤癒合進程並評估就醫需求。</p>
+                <div class="card-metrics">
+                    <div class="metric">
+                        <span class="metric-value">94.6%</span>
+                        <span class="metric-label">辨識率</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">追蹤</span>
+                        <span class="metric-label">癒合監測</span>
+                    </div>
+                </div>
+                <div class="card-status">
+                    <span class="status-dot active"></span>
+                    <span>即時監測中</span>
+                </div>
+            </div>
+
+            <!-- Card 5: Food Debris -->
+            <div class="risk-card" id="card-debris">
+                <div class="card-glow"></div>
+                <div class="card-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <rect x="14" y="10" width="8" height="28" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <rect x="26" y="10" width="8" height="28" rx="3" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <circle cx="24" cy="20" r="2" fill="currentColor" opacity="0.6"/>
+                        <circle cx="24" cy="26" r="1.5" fill="currentColor" opacity="0.5"/>
+                        <circle cx="23" cy="32" r="1" fill="currentColor" opacity="0.4"/>
+                        <path d="M22 16 L26 16" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">食物殘渣偵測</h3>
+                <p class="card-desc">辨識牙縫間食物殘留，標記難以清潔的死角區域，預防牙菌斑堆積。</p>
+                <div class="card-metrics">
+                    <div class="metric">
+                        <span class="metric-value">93.1%</span>
+                        <span class="metric-label">偵測率</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">即時</span>
+                        <span class="metric-label">反饋提示</span>
+                    </div>
+                </div>
+                <div class="card-status">
+                    <span class="status-dot active"></span>
+                    <span>即時監測中</span>
+                </div>
+            </div>
+
+            <!-- Card 6: Periodontal -->
+            <div class="risk-card card-highlight" id="card-periodontal">
+                <div class="card-glow"></div>
+                <div class="card-icon">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <path d="M24 8L24 40" stroke="currentColor" stroke-width="2"/>
+                        <path d="M16 16 C16 12 20 8 24 8 C28 8 32 12 32 16" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M12 20 C12 20 16 22 24 22 C32 22 36 20 36 20" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M14 24 L18 22 M34 24 L30 22" stroke="currentColor" stroke-width="1.5"/>
+                        <circle cx="24" cy="20" r="8" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
+                        <path d="M8 42 L40 42" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+                        <path d="M20 42 L20 36 M28 42 L28 36" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                    </svg>
+                </div>
+                <div class="card-badge-alert">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    重點關注
+                </div>
+                <h3 class="card-title">牙周病評估</h3>
+                <p class="card-desc">綜合評估牙齦萎縮、牙周袋深度、骨質流失等指標，判斷牙周病嚴重程度。</p>
+                <div class="card-metrics">
+                    <div class="metric">
+                        <span class="metric-value">98.1%</span>
+                        <span class="metric-label">評估準確度</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">5級</span>
+                        <span class="metric-label">嚴重度分級</span>
+                    </div>
+                </div>
+                <div class="card-status">
+                    <span class="status-dot warning"></span>
+                    <span>需定期監測</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Scan Modal -->
+    <div class="scan-modal" id="scanModal">
+        <div class="scan-modal-overlay"></div>
+        <div class="scan-modal-content">
+            <button class="scan-close" id="scanClose">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="scan-steps">
+                <!-- Step 1: Upload -->
+                <div class="scan-step active" id="step1">
+                    <div class="scan-step-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                    </div>
+                    <h3>上傳口腔照片</h3>
+                    <p>請拍攝或上傳您的口腔照片以進行 AI 分析</p>
+                    <div class="upload-zone" id="uploadZone">
+                        <input type="file" id="fileInput" accept="image/*" hidden>
+                        <div class="upload-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <polyline points="21 15 16 10 5 21"/>
+                            </svg>
+                        </div>
+                        <span>點擊或拖曳照片至此處</span>
+                        <span class="upload-hint">支援 JPG、PNG 格式，建議解析度 1920×1080 以上</span>
+                    </div>
+                    <button class="btn btn-primary btn-scan-next" id="useDemo">使用示範照片</button>
+                </div>
+
+                <!-- Step 2: Analyzing -->
+                <div class="scan-step" id="step2">
+                    <div class="scan-analyzing">
+                        <div class="analyzing-ring">
+                            <svg viewBox="0 0 120 120">
+                                <circle cx="60" cy="60" r="54" stroke="rgba(59,130,246,0.15)" stroke-width="4" fill="none"/>
+                                <circle cx="60" cy="60" r="54" stroke="url(#analyzeGrad)" stroke-width="4" fill="none" 
+                                        stroke-dasharray="339.292" stroke-dashoffset="339.292" stroke-linecap="round"
+                                        class="progress-ring"/>
+                                <defs>
+                                    <linearGradient id="analyzeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#3b82f6"/>
+                                        <stop offset="100%" stop-color="#10b981"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <span class="analyzing-percent">0%</span>
+                        </div>
+                        <h3>AI 正在分析您的口腔狀況...</h3>
+                        <div class="analyzing-steps-list">
+                            <div class="analyzing-step-item" data-step="detect">
+                                <span class="step-check">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                    </svg>
+                                </span>
+                                <span>結構與牙周分析</span>
+                            </div>
+                            <div class="analyzing-step-item" data-step="mucosa">
+                                <span class="step-check">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                    </svg>
+                                </span>
+                                <span>黏膜與殘留偵測</span>
+                            </div>
+                            <div class="analyzing-step-item" data-step="risk">
+                                <span class="step-check">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                    </svg>
+                                </span>
+                                <span>風險等級評估</span>
+                            </div>
+                            <div class="analyzing-step-item" data-step="guide">
+                                <span class="step-check">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                    </svg>
+                                </span>
+                                <span>生成個人化建議</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Results -->
+                <div class="scan-step" id="step3">
+                    <div class="scan-results">
+                        <div class="results-header">
+                            <div class="results-score">
+                                <svg viewBox="0 0 120 120" class="score-ring">
+                                    <circle cx="60" cy="60" r="52" stroke="rgba(59,130,246,0.1)" stroke-width="8" fill="none"/>
+                                    <circle cx="60" cy="60" r="52" stroke="url(#scoreGrad)" stroke-width="8" fill="none"
+                                            stroke-dasharray="326.73" stroke-dashoffset="78" stroke-linecap="round"
+                                            transform="rotate(-90, 60, 60)"/>
+                                    <defs>
+                                        <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#f59e0b"/>
+                                            <stop offset="100%" stop-color="#10b981"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div class="score-text">
+                                    <span class="score-number">76</span>
+                                    <span class="score-label">口腔健康分數</span>
+                                </div>
+                            </div>
+                            <div class="results-summary">
+                                <h3>分析完成</h3>
+                                <p>已偵測到 <strong>3 個</strong> 潛在風險區域，其中 <strong>1 個</strong> 需要優先關注。</p>
+                            </div>
+                        </div>
+
+                        <div class="results-findings">
+                            <div class="finding-item risk-high">
+                                <div class="finding-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <line x1="12" y1="8" x2="12" y2="12"/>
+                                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                    </svg>
+                                </div>
+                                <div class="finding-content">
+                                    <div class="finding-header">
+                                        <span class="finding-title">右下第一大臼齒 — 疑似齲齒</span>
+                                        <span class="finding-badge high">高風險</span>
+                                    </div>
+                                    <p>偵測到右下第一大臼齒咬合面有深色凹陷，疑似早期齲齒。建議盡速就醫檢查。</p>
+                                </div>
+                            </div>
+                            <div class="finding-item risk-medium">
+                                <div class="finding-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <line x1="12" y1="8" x2="12" y2="12"/>
+                                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                    </svg>
+                                </div>
+                                <div class="finding-content">
+                                    <div class="finding-header">
+                                        <span class="finding-title">下排門牙舌側 — 牙結石堆積</span>
+                                        <span class="finding-badge medium">中風險</span>
+                                    </div>
+                                    <p>下排門牙舌側偵測到明顯牙結石堆積，建議預約洗牙清潔。</p>
+                                </div>
+                            </div>
+                            <div class="finding-item risk-low">
+                                <div class="finding-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <polyline points="8 12 11 15 16 9"/>
+                                    </svg>
+                                </div>
+                                <div class="finding-content">
+                                    <div class="finding-header">
+                                        <span class="finding-title">左上犬齒牙縫 — 食物殘渣</span>
+                                        <span class="finding-badge low">低風險</span>
+                                    </div>
+                                    <p>偵測到少量食物殘渣嵌塞，建議使用牙線清潔該區域。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" id="viewGuidance" style="width:100%; margin-top:1.5rem;">
+                            查看個人化潔牙指引
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Personalized Guidance Section -->
+    <section class="section guidance-section" id="guidance">
+        <div class="section-header">
+            <div class="section-badge">個人化服務</div>
+            <h2 class="section-title">個人化<span class="gradient-text">潔牙指引</span></h2>
+            <p class="section-desc">根據您的口腔狀況，智慧生成專屬潔牙建議與就醫預警</p>
+        </div>
+
+        <div class="guidance-grid">
+            <!-- Brushing Navigation -->
+            <div class="guidance-card" id="guidance-nav">
+                <div class="guidance-card-header">
+                    <div class="guidance-icon">
+                        <svg viewBox="0 0 48 48" fill="none">
+                            <path d="M24 4L24 36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            <rect x="18" y="36" width="12" height="6" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <path d="M20 4 L28 4 L28 14 C28 18 24 20 24 20 C24 20 20 18 20 14 Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <line x1="20" y1="8" x2="28" y2="8" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                            <line x1="20" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>潔牙導航系統</h3>
+                        <p class="guidance-subtitle">AI 生成您的專屬口腔清潔地圖</p>
+                    </div>
+                </div>
+                <div class="guidance-features">
+                    <div class="feature-item">
+                        <div class="feature-check">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <strong>忽略區域標記</strong>
+                            <p>智能辨識您平時刷牙容易遺漏的區域</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-check">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <strong>分區刷牙指導</strong>
+                            <p>依照口腔地圖逐步引導正確刷牙方式</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-check">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <strong>清潔計時器</strong>
+                            <p>確保每個區域獲得足夠的清潔時間</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-check">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <strong>牙線使用建議</strong>
+                            <p>標記需要特別使用牙線清潔的牙縫位置</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Alert -->
+            <div class="guidance-card guidance-alert-card" id="guidance-alert">
+                <div class="guidance-card-header">
+                    <div class="guidance-icon alert-icon">
+                        <svg viewBox="0 0 48 48" fill="none">
+                            <path d="M24 6L4 42H44L24 6Z" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+                            <line x1="24" y1="18" x2="24" y2="30" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="24" cy="36" r="2" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>就醫預警系統</h3>
+                        <p class="guidance-subtitle">即時監測嚴重風險，智慧發出就醫建議</p>
+                    </div>
+                </div>
+
+                <!-- Alert Demo -->
+                <div class="alert-demo" id="alertDemo">
+                    <div class="alert-card alert-critical">
+                        <div class="alert-header">
+                            <div class="alert-level">
+                                <span class="alert-dot critical-dot"></span>
+                                緊急就醫建議
+                            </div>
+                            <span class="alert-time">剛才</span>
+                        </div>
+                        <div class="alert-body">
+                            <p><strong>偵測到疑似嚴重牙周病徵兆</strong></p>
+                            <p>系統偵測到左下臼齒區域有明顯牙齦萎縮及深度牙周袋（>5mm），建議您盡速預約牙周專科醫師進行詳細檢查。</p>
+                        </div>
+                        <div class="alert-actions">
+                            <button class="alert-btn primary">查看附近牙醫</button>
+                            <button class="alert-btn secondary">設定提醒</button>
+                        </div>
+                    </div>
+
+                    <div class="alert-card alert-warning">
+                        <div class="alert-header">
+                            <div class="alert-level">
+                                <span class="alert-dot warning-dot"></span>
+                                建議回診追蹤
+                            </div>
+                            <span class="alert-time">2小時前</span>
+                        </div>
+                        <div class="alert-body">
+                            <p>右上第二小臼齒的齲齒風險指數上升，建議您在 2 週內安排牙科檢查。</p>
+                        </div>
+                        <div class="alert-actions">
+                            <button class="alert-btn secondary">設定回診提醒</button>
+                        </div>
+                    </div>
+
+                    <div class="alert-card alert-info">
+                        <div class="alert-header">
+                            <div class="alert-level">
+                                <span class="alert-dot info-dot"></span>
+                                定期保健提醒
+                            </div>
+                            <span class="alert-time">1天前</span>
+                        </div>
+                        <div class="alert-body">
+                            <p>距離上次洗牙已超過 6 個月，建議您預約例行性洗牙與口腔檢查。</p>
+                        </div>
+                        <div class="alert-actions">
+                            <button class="alert-btn secondary">預約洗牙</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Tooth Map -->
+    <section class="section toothmap-section" id="toothmap">
+        <div class="section-header">
+            <div class="section-badge">互動地圖</div>
+            <h2 class="section-title">互動式<span class="gradient-text">口腔地圖</span></h2>
+            <p class="section-desc">點擊任一顆牙齒查看詳細狀態，紅色區域代表需特別留意的位置</p>
+        </div>
+
+        <div class="toothmap-container">
+            <div class="toothmap-view">
+                <div class="jaw-label upper-label">上排牙齒</div>
+                
+                <!-- Upper Jaw -->
+                <div class="jaw upper-jaw" id="upperJaw">
+                    <div class="tooth-row">
+                        <div class="tooth" data-id="18" data-name="右上第三大臼齒（智齒）" data-status="normal">
+                            <div class="tooth-shape molar"><span>18</span></div>
+                        </div>
+                        <div class="tooth" data-id="17" data-name="右上第二大臼齒" data-status="normal">
+                            <div class="tooth-shape molar"><span>17</span></div>
+                        </div>
+                        <div class="tooth" data-id="16" data-name="右上第一大臼齒" data-status="warning">
+                            <div class="tooth-shape molar"><span>16</span></div>
+                        </div>
+                        <div class="tooth" data-id="15" data-name="右上第二小臼齒" data-status="caution">
+                            <div class="tooth-shape premolar"><span>15</span></div>
+                        </div>
+                        <div class="tooth" data-id="14" data-name="右上第一小臼齒" data-status="normal">
+                            <div class="tooth-shape premolar"><span>14</span></div>
+                        </div>
+                        <div class="tooth" data-id="13" data-name="右上犬齒" data-status="normal">
+                            <div class="tooth-shape canine"><span>13</span></div>
+                        </div>
+                        <div class="tooth" data-id="12" data-name="右上側門牙" data-status="normal">
+                            <div class="tooth-shape incisor"><span>12</span></div>
+                        </div>
+                        <div class="tooth" data-id="11" data-name="右上正門牙" data-status="normal">
+                            <div class="tooth-shape incisor"><span>11</span></div>
+                        </div>
+                        <div class="tooth" data-id="21" data-name="左上正門牙" data-status="normal">
+                            <div class="tooth-shape incisor"><span>21</span></div>
+                        </div>
+                        <div class="tooth" data-id="22" data-name="左上側門牙" data-status="normal">
+                            <div class="tooth-shape incisor"><span>22</span></div>
+                        </div>
+                        <div class="tooth" data-id="23" data-name="左上犬齒" data-status="debris">
+                            <div class="tooth-shape canine"><span>23</span></div>
+                        </div>
+                        <div class="tooth" data-id="24" data-name="左上第一小臼齒" data-status="normal">
+                            <div class="tooth-shape premolar"><span>24</span></div>
+                        </div>
+                        <div class="tooth" data-id="25" data-name="左上第二小臼齒" data-status="normal">
+                            <div class="tooth-shape premolar"><span>25</span></div>
+                        </div>
+                        <div class="tooth" data-id="26" data-name="左上第一大臼齒" data-status="normal">
+                            <div class="tooth-shape molar"><span>26</span></div>
+                        </div>
+                        <div class="tooth" data-id="27" data-name="左上第二大臼齒" data-status="normal">
+                            <div class="tooth-shape molar"><span>27</span></div>
+                        </div>
+                        <div class="tooth" data-id="28" data-name="左上第三大臼齒（智齒）" data-status="normal">
+                            <div class="tooth-shape molar"><span>28</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="jaw-divider">
+                    <div class="divider-line"></div>
+                    <span class="divider-text">咬合面</span>
+                    <div class="divider-line"></div>
+                </div>
+
+                <!-- Lower Jaw -->
+                <div class="jaw lower-jaw" id="lowerJaw">
+                    <div class="tooth-row">
+                        <div class="tooth" data-id="48" data-name="右下第三大臼齒（智齒）" data-status="normal">
+                            <div class="tooth-shape molar"><span>48</span></div>
+                        </div>
+                        <div class="tooth" data-id="47" data-name="右下第二大臼齒" data-status="normal">
+                            <div class="tooth-shape molar"><span>47</span></div>
+                        </div>
+                        <div class="tooth" data-id="46" data-name="右下第一大臼齒" data-status="danger">
+                            <div class="tooth-shape molar"><span>46</span></div>
+                        </div>
+                        <div class="tooth" data-id="45" data-name="右下第二小臼齒" data-status="normal">
+                            <div class="tooth-shape premolar"><span>45</span></div>
+                        </div>
+                        <div class="tooth" data-id="44" data-name="右下第一小臼齒" data-status="normal">
+                            <div class="tooth-shape premolar"><span>44</span></div>
+                        </div>
+                        <div class="tooth" data-id="43" data-name="右下犬齒" data-status="normal">
+                            <div class="tooth-shape canine"><span>43</span></div>
+                        </div>
+                        <div class="tooth" data-id="42" data-name="右下側門牙" data-status="tartar">
+                            <div class="tooth-shape incisor"><span>42</span></div>
+                        </div>
+                        <div class="tooth" data-id="41" data-name="右下正門牙" data-status="tartar">
+                            <div class="tooth-shape incisor"><span>41</span></div>
+                        </div>
+                        <div class="tooth" data-id="31" data-name="左下正門牙" data-status="tartar">
+                            <div class="tooth-shape incisor"><span>31</span></div>
+                        </div>
+                        <div class="tooth" data-id="32" data-name="左下側門牙" data-status="tartar">
+                            <div class="tooth-shape incisor"><span>32</span></div>
+                        </div>
+                        <div class="tooth" data-id="33" data-name="左下犬齒" data-status="normal">
+                            <div class="tooth-shape canine"><span>33</span></div>
+                        </div>
+                        <div class="tooth" data-id="34" data-name="左下第一小臼齒" data-status="normal">
+                            <div class="tooth-shape premolar"><span>34</span></div>
+                        </div>
+                        <div class="tooth" data-id="35" data-name="左下第二小臼齒" data-status="periodontal">
+                            <div class="tooth-shape premolar"><span>35</span></div>
+                        </div>
+                        <div class="tooth" data-id="36" data-name="左下第一大臼齒" data-status="periodontal">
+                            <div class="tooth-shape molar"><span>36</span></div>
+                        </div>
+                        <div class="tooth" data-id="37" data-name="左下第二大臼齒" data-status="normal">
+                            <div class="tooth-shape molar"><span>37</span></div>
+                        </div>
+                        <div class="tooth" data-id="38" data-name="左下第三大臼齒（智齒）" data-status="normal">
+                            <div class="tooth-shape molar"><span>38</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="jaw-label lower-label">下排牙齒</div>
+            </div>
+
+            <!-- Tooth Detail Panel -->
+            <div class="tooth-detail" id="toothDetail">
+                <div class="detail-placeholder">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4">
+                        <path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
+                    </svg>
+                    <p>點擊上方牙齒圖示<br>查看該牙齒的詳細狀態</p>
+                </div>
+                <div class="detail-content" id="detailContent" style="display:none;">
+                    <div class="detail-header">
+                        <span class="detail-id" id="detailId">#11</span>
+                        <span class="detail-status-badge" id="detailStatusBadge">正常</span>
+                    </div>
+                    <h4 id="detailName">右上正門牙</h4>
+                    <div class="detail-info" id="detailInfo">
+                        <div class="info-row">
+                            <span class="info-label">狀態</span>
+                            <span class="info-value" id="detailStatusText">健康</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">風險等級</span>
+                            <span class="info-value" id="detailRisk">低</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">建議</span>
+                            <span class="info-value" id="detailAdvice">維持日常清潔</span>
+                        </div>
+                    </div>
+                    <div class="detail-brushing" id="detailBrushing">
+                        <h5>潔牙建議</h5>
+                        <p id="detailBrushingText">請使用軟毛牙刷，以 45 度角輕柔刷洗牙齦線。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="toothmap-legend">
+                <div class="legend-item">
+                    <span class="legend-dot" style="background: var(--status-normal);"></span>
+                    <span>正常</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background: var(--status-debris);"></span>
+                    <span>食物殘渣</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background: var(--status-tartar);"></span>
+                    <span>牙結石</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background: var(--status-caution);"></span>
+                    <span>需留意</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background: var(--status-warning);"></span>
+                    <span>輕度風險</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background: var(--status-danger);"></span>
+                    <span>高度風險</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background: var(--status-periodontal);"></span>
+                    <span>牙周病</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="brand-icon small">
+                    <svg viewBox="0 0 40 40" fill="none">
+                        <path d="M20 4C14 4 10 8 8 12C6 16 7 22 10 28C12 32 15 36 17 38C18 39 19 40 20 40C21 40 22 39 23 38C25 36 28 32 30 28C33 22 34 16 32 12C30 8 26 4 20 4Z" fill="url(#toothGrad2)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                        <defs>
+                            <linearGradient id="toothGrad2" x1="8" y1="4" x2="32" y2="40">
+                                <stop offset="0%" stop-color="#6ee7b7"/>
+                                <stop offset="100%" stop-color="#3b82f6"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span>DentAI<span class="brand-highlight">Care</span></span>
+            </div>
+            <p class="footer-note">本系統僅提供參考建議，不能替代專業牙醫診斷。如有口腔健康問題，請諮詢牙科醫師。</p>
+            <p class="footer-copy">&copy; 2026 DentAICare. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
